@@ -16,7 +16,7 @@
   "license": "ISC",
   "homepage": "https://bitbucket.org/sovoro/sovoro_web_client#readme",
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.18.1",
     "babel-core": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "babel-preset-stage-2": "^6.24.1",
