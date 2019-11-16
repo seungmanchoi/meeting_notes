@@ -1,0 +1,31 @@
+{
+  "name": "sovoro_web_client",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "webpack": "webpack",
+    "dev": "export SERVER_PORT=8808 && node web_server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/sovoro/sovoro_web_client.git"
+  },
+  "author": "blueng <blueng.choi@gmail.com>",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/sovoro/sovoro_web_client#readme",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "babel-core": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "dotenv": "^4.0.0",
+    "express": "^4.16.2",
+    "jquery": "^3.3.1",
+    "request": "^2.85.0",
+    "socket.io-client": "^2.0.4",
+    "socket.io-stream": "^0.9.1",
+    "webpack": "^3.8.1"
+  }
+}

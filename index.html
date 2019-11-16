@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Meeting Notes</title>
+    <link rel="stylesheet" href="index.css" />
+    <link rel="stylesheet" href="js/jquery-ui-1.12.1/jquery-ui.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="js/jquery-ui-1.12.1/jquery-ui.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+</head>
+<body>
+    <div id="login_wrap" class="wrap">
+        <h2 class="main_title">Meeting Notes</h2>
+
+        <div class="login-body">
+            <div class="input-group input-group-lg">
+                <input type="text" class="form-control" id="name" placeholder="이름">
+                <input type="text" class="form-control" id="channelName" placeholder="채널명">
+                <div class="input-group-append">
+                    <button class="btn btn-primary" id="btn_create" type="button" id="button-addon2">회의하기</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom" style="
+            height: 80px;
+            background: black;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            color:  white;
+            font-size: 26px;
+            line-height: 80px;
+            padding-right: 30px;
+            text-align: right;
+        ">Meeting Notes by YW & SM
+        </div>
+    </div>
+
+    <div id="room_wrap" style="display: none">
+        <div style="
+            line-height: 30px;
+            vertical-align: middle;
+            padding: 30px 30px 0 30px;
+            font-size: 30px;
+            text-shadow: 3px 3px 3px rgba(0, 0, 0, 0.3);
+            color: #000000;
+        ">
+            <i class="fas fa-cloud"></i> <span id="channel_name"></span>
+            <button type="button" id="btn_exit" class="btn btn-primary float-right">나가기</button>
+        </div>
+        <div class="room_body">
+            <div id="background-wrap">
+                <div class="x1">
+                    <div class="cloud"></div>
+                </div>
+
+                <div class="x2">
+                    <div class="cloud"></div>
+                </div>
+
+                <div class="x3">
+                    <div class="cloud"></div>
+                </div>
+
+                <div class="x4">
+                    <div class="cloud"></div>
+                </div>
+
+                <div class="x5">
+                    <div class="cloud"></div>
+                </div>
+            </div>
+
+            <div id="tabs">
+                <ul>
+                    <li><a href="#tabs-conversation">Conversation</a></li>
+                    <li><a href="#tabs-meeting-notes">Meeting Notes</a></li>
+                </ul>
+                <div id="tabs-conversation">
+                    <ul id="sortable-left" class="connectedSortable">
+
+                    </ul>
+
+                    <ul id="sortable-right" class="connectedSortable">
+
+                    </ul>
+                </div>
+                <div id="tabs-meeting-notes">
+                    <button type="button" id="btn_save" class="btn btn-primary float-right" style="margin-bottom:15px">회의록 저장</button>
+                    <table id="table" class="table-meeting-notes table table-bordered table-striped table-mc-light-blue">
+                        <colgroup>
+                            <col width="15%"/>
+                            <col width="80%"/>
+                            <col width="10%"/>
+                        </colgroup>
+                        <tbody>
+                        <!--<tr>-->
+                            <!--<td>-->
+                                <!--<img src="images/avatars/avatar10.jpg" width="50" height="50" class="align-self-start mr-3" >-->
+                                <!--<span>최승만</span>-->
+                            <!--</td>-->
+                            <!--<td>-->
+                                <!--안녕하세요 최승만입니다.-->
+                            <!--</td>-->
+                            <!--<td class="text-center">17:55:00</td>-->
+                        <!--</tr>-->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="alert alert-primary alert-dismissible" style="display:none; position: absolute; top: 20px; right: 20px; width: 400px; height: 50px" role="alert">
+        <strong class="alert-name"></strong><span class="alert-message"></span>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <script src="web.js"></script>
+</body>
+</html>
