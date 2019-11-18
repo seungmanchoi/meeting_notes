@@ -23,6 +23,7 @@ var LoginComp = (function () {
       this.$name = $('#name');
       this.$channelName = $('#channelName');
       this.$btnCreateChannel = $('#btn_create');
+      this.$btnSave = $('#btn_save');
       this.$btnExit = $('#btn_exit');
     },
     bindEvents: function () {
@@ -37,8 +38,35 @@ var LoginComp = (function () {
         }
       });
 
-      this.$btnExit.on('click', function (e) {
+      this.$btnSave.on('click', function(e) {
+        if (confirm('회의 내용을 저장하시겠습니까?')) {
+          var date = new Date();
+          var content = '회의일자 : ' + date.getFullYear() + '-' + ((date.getMonth() % 12) + 1) + '-' + date.getDate() + '\r\n';
 
+          $('.table-meeting-notes tbody').find('tr').each(function () {
+            var $this = $(this);
+            console.log($this.find('.data-time'))
+
+            switch($this.data('type')) {
+              case 'action':
+                content += '----------------------------------------------------------------' + '\r\n';
+                content += $this.find('.data-time').text() + '|' + $this.find('.data-content').text() + '\r\n'
+                break;
+              case 'message':
+                content += '----------------------------------------------------------------' + '\r\n';
+                content += $this.find('.data-time').text() + ' | ' + $this.find('.data-name').text() + ' | ' + $this.find('.data-message').text() + '\r\n'
+                break;
+            }
+          });
+
+          this.saveToFile('meeting-minutes.txt', content);
+        }
+      });
+
+      this.$btnExit.on('click', function (e) {
+        if (confirm('회의를 종료하시겠습니까?')) {
+          window.location.reload();
+        }
       });
     },
     join: function () {
@@ -48,6 +76,26 @@ var LoginComp = (function () {
       if (name && channelName) {
         SocketChannel.joinChannel(channelName, name);
       }
+    },
+    /*
+    * chrome에서만 사용
+    * */
+    saveToFile: function (fileName, content) {
+      var blob = new Blob([content], { type: 'text/plain' });
+
+      var objURL = window.URL.createObjectURL(blob);
+
+      // 이전에 생성된 메모리 해제
+      if (window.__Xr_objURL_forCreatingFile__) {
+        window.URL.revokeObjectURL(window.__Xr_objURL_forCreatingFile__);
+      }
+      window.__Xr_objURL_forCreatingFile__ = objURL;
+
+      var a = document.createElement('a');
+
+      a.download = fileName;
+      a.href = objURL;
+      a.click();
     }
   }
 })().init();
@@ -138,7 +186,7 @@ var SocketChannel = (function () {
             }
           })
 
-          $('.table-meeting-notes tbody').append('<tr><td colspan="2" class="text-center">' + data.joinUser.name + '님이 회의에 참석하였습니다.</td><td>' + data.joinUser.joinedAt.split(' ')[1] + '</td></tr>');
+          $('.table-meeting-notes tbody').append('<tr data-type="action"><td colspan="2" class="text-center data-content">' + data.joinUser.name + '님이 회의에 참석하였습니다.</td><td class="data-time">' + data.joinUser.joinedAt.split(' ')[1] + '</td></tr>');
 
           setTimeout(function () {
             $('.alert').fadeOut();
@@ -154,7 +202,7 @@ var SocketChannel = (function () {
           $('.alert .alert-message').text("님이 회의에 참석하였습니다.");
           $('.alert').fadeIn();
 
-          $('.table-meeting-notes tbody').append('<tr><td colspan="2" class="text-center">' + data.joinUser.name + '님이 회의에 참석하였습니다.</td><td>' + data.joinUser.joinedAt.split(' ')[1] + '</td></tr>')
+          $('.table-meeting-notes tbody').append('<tr data-type="action"><td colspan="2" class="text-center data-content">' + data.joinUser.name + '님이 회의에 참석하였습니다.</td><td class="data-time">' + data.joinUser.joinedAt.split(' ')[1] + '</td></tr>');
 
           setTimeout(function () {
             $('.alert').fadeOut();
@@ -165,7 +213,7 @@ var SocketChannel = (function () {
           var template = [
             '<li class="ui-state-default" data-id="' + user.id + '">',
               '<div class="media">',
-                '<img src="' + user.avatar + '" class="align-self-start mr-3">',
+                '<img src="' + user.avatar + '" class="align-self-start mr-3" width="150" height="150">',
                 '<div class="media-body">',
                   '<h5 class="mt-0">' + user.name + '</h5>',
                   '<p class="message-box"></p>',
@@ -193,7 +241,7 @@ var SocketChannel = (function () {
         var leavedAt = data.leaveUser.leavedAt;
         var name = $('[data-id=' + id +']').find('.mt-0').text();
 
-        $('.table-meeting-notes tbody').append('<tr><td colspan="2" class="text-center">' + name + '님이 회의를 종료하였습니다. </td><td>' + leavedAt + '</td></tr>');
+        $('.table-meeting-notes tbody').append('<tr data-type="action"><td colspan="2" class="text-center data-content">' + name + '님이 회의를 종료하였습니다. </td><td class="data-time">' + leavedAt + '</td></tr>');
         $('[data-id=' + id +']').remove();
       });
 
@@ -207,13 +255,13 @@ var SocketChannel = (function () {
           var avatarSrc = $userBox.find('.media img').attr('src');
           var name = $userBox.find('.media-body .mt-0').text();
           var tr = [
-            '<tr>',
+            '<tr data-type="message">',
               '<td>',
                 '<img src="' + avatarSrc + '" width="50" height="50" class="align-self-start mr-3" >',
-                '<span>' + name + '</span>',
+                '<span class="data-name">' + name + '</span>',
               '</td>',
-              '<td>' + data.message + '</td>',
-              '<td class="text-center">' + data.receivedAt + '</td>',
+              '<td class="data-message">' + data.message + '</td>',
+              '<td class="text-center data-time">' + data.receivedAt + '</td>',
             '</tr>',
           ]
           $('.table-meeting-notes').find('tbody').append(tr.join('\n'));
